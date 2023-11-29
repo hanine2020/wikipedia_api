@@ -11,7 +11,7 @@ pip install -r requirements.txt
 3. Apply Database Migrations:
 python manage.py migrate
 
-4. Run the Development Serverusing:
+4. Run the Development Server using:
     . python manage.py runserver
 
    
