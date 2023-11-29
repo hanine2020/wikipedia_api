@@ -54,7 +54,7 @@ ROOT_URLCONF = 'wikipedia_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "wikisearch" / "templates" / "wikisearch"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

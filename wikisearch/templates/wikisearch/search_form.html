@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia Search Form</title>
+    <style>
+
+        h2 {
+  --s: 0.1em;   /* the thickness of the line */
+  --c: #4caf50; /* the color */
+  
+  color: #0000;
+  padding-bottom: var(--s);
+  background: 
+    linear-gradient(90deg,var(--c) 50%,#000 0) calc(100% - var(--_p,0%))/200% 100%,
+    linear-gradient(var(--c) 0 0) 0% 100%/var(--_p,0%) var(--s) no-repeat;
+  -webkit-background-clip: text,padding-box;
+          background-clip: text,padding-box;
+  transition: 0.5s;
+}
+h2:hover {--_p: 100%}
+
+
+body {
+  height: 100vh;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  font-weight: bold;
+  font-family: 'arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+}
+h2 {
+  font-family: system-ui, sans-serif;
+  font-size: 5rem;
+  cursor: pointer;
+}
+
+input[type="button"] {
+    background-color: #4caf50; /* Green color */
+    color: #fff; /* Text color */
+    cursor: pointer;
+}
+
+input[type="button"]:hover {
+    background-color: #45a049; /* Darker green color on hover */
+}
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #result-box {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        #result-box {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .article {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <h2>Wikipedia Search Form</h2>
+    <form id="search-form">
+        <label for="search_term">Search Term:</label>
+        <input type="text" id="search_term" name="search_term" required>
+
+        <label for="language">Language:</label>
+        <input type="text" id="language" name="language" required>
+
+        <input type="button" value="Search" onclick="searchWikipedia()">
+    </form>
+
+    <div id="result-box">
+        <p id="result">Search result will be displayed here.</p>
+        <div id="articles"></div>
+    </div>
+
+    <script>
+function searchWikipedia() {
+        var searchForm = document.getElementById('search-form');
+        var formData = new FormData(searchForm);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '{% url "search_wikipedia" %}?' + new URLSearchParams(formData).toString(), true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+        // Handling the response
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Success: Update the content of the result box
+                var resultBox = document.getElementById('result-box');
+                resultBox.style.display = 'block';
+
+                var response = JSON.parse(xhr.responseText);
+                var resultElement = document.getElementById('result');
+                resultElement.textContent = response.result || 'No aparagraph for this term.' ;
+
+                var articlesContainer = document.getElementById('articles');
+                articlesContainer.innerHTML = '';
+
+                if (response.articles && response.articles.length > 0) {
+                    response.articles.forEach(function(article) {
+                        var articleElement = document.createElement('div');
+                        articleElement.className = 'article';
+                        articleElement.textContent = 'Article that contains this term: ' + article.name;
+                        articlesContainer.appendChild(articleElement);
+                    });
+                }
+            } else {
+                // Error: Handle the error case
+                console.error('Request failed with status', xhr.status);
+            }
+        };
+
+        // Send the request
+        xhr.send();
+    }
+    </script>
+</body>
+</html>

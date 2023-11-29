@@ -3,9 +3,19 @@
 from django.http import JsonResponse, HttpResponseNotFound
 from django.views.decorators.http import require_GET
 import requests
+from django.shortcuts import render
 
 WIKIPEDIA_API_URL = "https://{language}.wikipedia.org/w/api.php"
 
+
+
+def search_form(request):
+    # Render the HTML form for inputting search terms and language
+    return render(request, 'search_form.html')
+
+def search_results(request):
+    # Render the HTML form for results
+    return render(request, 'search_results.html')
 
 def is_valid_language(language):
     # Add a list of valid Wikipedia languages here
